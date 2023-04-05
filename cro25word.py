@@ -3,27 +3,20 @@ from pygame.locals import *
 from letter import *
 from key_input import *
 
-# Crossword Variables
+# 
 select_across = True
 
 selected_row = 0
 selected_col = 0
  
-# Define some colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
- 
-# This sets the WIDTH and HEIGHT of each grid location
+# Width and Height of Letter Boxes
 WIDTH = 80
 HEIGHT = 80
  
-# This sets the margin between each cell
+# This sets the margin between each letter.
 MARGIN = 5
  
-# Create a 2 dimensional array. A two dimensional
-# array is simply a list of lists.
+# Create 2 dimensional array of letters.
 grid = []
 
  
@@ -54,15 +47,55 @@ for row in range(5):
 def update_selected():
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            if select_across and i == selected_row:
-                print("selecting")
-                print(i)
-                print(j)
+            grid[i][j].active_letter = False
+            if i == selected_row and j == selected_col:
+                grid[i][j].active_letter = True
+                grid[i][j].SelectLetter()
+            elif select_across and i == selected_row:
+
                 grid[i][j].SelectLetter()
             elif select_across == False and j == selected_col:
                 grid[i][j].SelectLetter()
             else:
                 grid[i][j].SelectLetter(False)
+
+def advance_cursor(next_letter = False):
+    global selected_row
+    global selected_col
+    global select_across
+    if next_letter == True:
+        if select_across:
+            selected_col = (selected_col + 1) % len(grid[selected_row])
+        else:
+            length = 0
+            for i in range(len(grid)):
+                if grid[i][selected_col]:
+                    length += 1
+            selected_row = (selected_row + 1) % length
+    else:
+        if select_across:
+            length = len(grid[selected_row])
+            print(selected_col)
+            for i in range(selected_col, selected_col + length):
+
+                new_col = (i+1)%length
+
+                if grid[selected_row][new_col].text == None:
+                    selected_col = new_col
+                    print(selected_col)
+                    break
+        else:
+            length = 0
+            for i in range(len(grid)):
+                if grid[i][selected_col]:
+                    length += 1
+            for i in range(selected_row, length):
+                if grid[i % length][selected_col].text == None:
+                    selected_row = i % length
+                    break
+    update_selected()
+
+def populate_words():
 
 
  
@@ -86,7 +119,14 @@ while not done:
             # Set that location to one
             print("Click ", pos, "Grid coordinates: ", selected_row, selected_col)
         elif event.type == pygame.KEYDOWN:
-            print(get_key_pressed(event))
+            if get_key_pressed(event) == "tab":
+                advance_cursor(True)
+            else:
+                key = get_key_pressed(event)
+                grid[selected_row][selected_col].text = get_key_pressed(event)
+                if key != None:
+                    advance_cursor()
+                
 
  
     # Set the screen background

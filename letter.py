@@ -1,8 +1,7 @@
 import pygame
 
 pygame.init()
-font = pygame.font.SysFont(None, 24)
-text = font.render('hello', True, "blue")
+font = pygame.font.SysFont(None, 56)
 
 
 class Letter():
@@ -10,6 +9,7 @@ class Letter():
         self.screen = args[0]
         self.row = args[1]
         self.col = args[2]
+        self.active_letter = False
         self.width = 80
         self.height = 80
         self.margin = 5
@@ -31,15 +31,27 @@ class Letter():
                               self.width,
                               self.height])
         if self.selected:
+            if self.active_letter:
+                pygame.draw.rect(self.screen,
+                                "purple",
+                                [(self.margin + self.width) * self.col + self.margin,
+                                (self.margin + self.height) * self.row + self.margin,
+                                self.width,
+                                self.height], 2)
+            else:
+                pygame.draw.rect(self.screen,
+                    "cyan",
+                    [(self.margin + self.width) * self.col + self.margin,
+                    (self.margin + self.height) * self.row + self.margin,
+                    self.width,
+                    self.height], 2)
+
+        if self.text:
+            text = font.render(self.text, True, "black")
             self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin,
-                              (self.margin + self.height) * self.row + self.margin,
-                              self.width,
-                              self.height])
-            pygame.draw.rect(self.screen,
-                             "cyan",
-                             [(self.margin + self.width) * self.col + self.margin,
-                              (self.margin + self.height) * self.row + self.margin,
-                              self.width,
-                              self.height], 2)
+                    (self.margin + self.height) * self.row + self.margin,
+                    self.width,
+                    self.height])
+
             
 
