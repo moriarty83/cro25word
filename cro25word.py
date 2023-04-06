@@ -1,5 +1,5 @@
 import pygame
-import numpy
+import random
 from pygame.locals import *
 from letter import *
 from word import *
@@ -31,7 +31,7 @@ words_in_use = []
 pygame.init()
  
 # Set the HEIGHT and WIDTH of the screen
-WINDOW_SIZE = [600, 900]
+WINDOW_SIZE = [500, 500]
 screen = pygame.display.set_mode(WINDOW_SIZE)
  
 # Set title of screen
@@ -114,7 +114,14 @@ def populate_words():
         words_across.append(Word(row_letters, True, i))
         words_down.append(Word(col_letters, False, j))        
 
+def get_start_letters():
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    start_letters = []
+    for i in range(3):
+        start_letters.append(alphabet(random.randint(0,25)))
+
 populate_words()
+update_selected()
  
 # -------- Main Program Loop -----------
 while not done:
@@ -124,9 +131,10 @@ while not done:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos()
+
             # Change the x/y screen coordinates to letters coordinates
-            new_col = pos[0] // (WIDTH + MARGIN)
-            new_row = pos[1] // (HEIGHT + MARGIN)
+            new_col = (pos[0]-35) // (WIDTH + MARGIN)
+            new_row = (pos[1]-35) // (HEIGHT + MARGIN)
             if new_row == selected_row and new_col == selected_col:
                 select_across = not select_across
             else:

@@ -13,6 +13,7 @@ class Letter():
         self.width = 80
         self.height = 80
         self.margin = 5
+        self.offset =35
         self.color = "white"
         self.text = None
         self.selected = False
@@ -29,30 +30,30 @@ class Letter():
         self.color = "blue" if self.in_word_across and self.in_word_down else "green" if self.in_word_across or self.in_word_down else "white"
         pygame.draw.rect(self.screen,
                              self.color,
-                             [(self.margin + self.width) * self.col + self.margin,
-                              (self.margin + self.height) * self.row + self.margin,
+                             [(self.margin + self.width) * self.col + self.margin+self.offset,
+                              (self.margin + self.height) * self.row + self.margin + self.offset,
                               self.width,
                               self.height])
         if self.selected:
             if self.active_letter:
                 pygame.draw.rect(self.screen,
                                 "purple",
-                                [(self.margin + self.width) * self.col + self.margin,
-                                (self.margin + self.height) * self.row + self.margin,
+                                [(self.margin + self.width) * self.col + self.margin+self.offset,
+                                (self.margin + self.height) * self.row + self.margin+self.offset,
                                 self.width,
                                 self.height], 2)
             else:
                 pygame.draw.rect(self.screen,
                     "cyan",
-                    [(self.margin + self.width) * self.col + self.margin,
-                    (self.margin + self.height) * self.row + self.margin,
+                    [(self.margin + self.width) * self.col + self.margin+self.offset,
+                    (self.margin + self.height) * self.row + self.margin+self.offset,
                     self.width,
                     self.height], 2)
 
         if self.text:
             text = font.render(self.text, True, "black")
-            self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin,
-                    (self.margin + self.height) * self.row + self.margin,
+            self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin+self.offset,
+                    (self.margin + self.height) * self.row + self.margin+self.offset,
                     self.width,
                     self.height])
 
