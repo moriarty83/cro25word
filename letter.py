@@ -16,6 +16,8 @@ class Letter():
         self.color = "white"
         self.text = None
         self.selected = False
+        self.in_word_across = False
+        self.in_word_down = False
 
         
         
@@ -24,6 +26,7 @@ class Letter():
             
 
     def RenderLetter(self):
+        self.color = "blue" if self.in_word_across and self.in_word_down else "green" if self.in_word_across or self.in_word_down else "white"
         pygame.draw.rect(self.screen,
                              self.color,
                              [(self.margin + self.width) * self.col + self.margin,
