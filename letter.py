@@ -2,6 +2,38 @@ import pygame
 
 pygame.init()
 font = pygame.font.SysFont(None, 56)
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+letter_values = {"E":1,
+    "A":1,
+    "S":1,
+    "0":1,
+    "T":1,
+
+    "I": 2,
+    "R": 2,
+    "N": 2,
+    "L": 2,
+    "D": 2,
+
+    "U": 3,
+    "P": 3,
+    "M": 3,
+    "C": 3,
+    "G": 3,
+
+    "Y":4,
+    "B":4,
+    "H":4,
+    "K":4,
+    "W":4,
+
+    "F": 5,
+    "V": 5,
+    "Z": 5,
+    "X": 5,
+    "Q": 5,
+    "J": 5,
+    }
 
 
 class Letter():
@@ -9,6 +41,7 @@ class Letter():
         self.screen = args[0]
         self.row = args[1]
         self.col = args[2]
+        self.static = False
         self.active_letter = False
         self.width = 80
         self.height = 80
@@ -27,7 +60,7 @@ class Letter():
             
 
     def RenderLetter(self):
-        self.color = "blue" if self.in_word_across and self.in_word_down else "green" if self.in_word_across or self.in_word_down else "white"
+        self.color = "gray" if self.static == True else "blue" if self.in_word_across and self.in_word_down else "green" if self.in_word_across or self.in_word_down else "white"
         pygame.draw.rect(self.screen,
                              self.color,
                              [(self.margin + self.width) * self.col + self.margin+self.offset,
@@ -56,6 +89,31 @@ class Letter():
                     (self.margin + self.height) * self.row + self.margin+self.offset,
                     self.width,
                     self.height])
+            
+    def ScoreLetter(self):
+        
+        score = 0
+        if self.text == None:
+            return score
+        if self.in_word_across:
+            score += 5
+            if self.static:
+                score += 5
+        if self.in_word_across:
+            score += 5
+            if self.static:
+                score += 5
+        
+        
 
             
+# Letter scores inpsired by 
+# CROSSWORD PUZZLE LETTER FREQUENCIES
+# By JOHN D. IDTCHCOCK
+# Laramie, Wyoming
+
+
+
+
+
 

@@ -12,8 +12,12 @@ selected_row = 0
 selected_col = 0
  
 # Width and Height of Letter Boxes
-WIDTH = 80
-HEIGHT = 80
+cell_width = 80
+cell_height = 80
+
+# Screen dimensions
+screen_width = 500
+screen_height = 550
  
 # This sets the margin between each letter.
 MARGIN = 5
@@ -26,12 +30,21 @@ words_across = []
 words_down = []
 words_in_use = []
 
+# Session Data
+font = pygame.font.SysFont(None, 24)
+btn_font = pygame.font.SysFont(None, 36)
+
+time_elapsed = 0
+
+finish_clicked = False
+finish_confirmed = False
+
  
 # Initialize pygame
 pygame.init()
  
 # Set the HEIGHT and WIDTH of the screen
-WINDOW_SIZE = [500, 500]
+WINDOW_SIZE = [500, 550]
 screen = pygame.display.set_mode(WINDOW_SIZE)
  
 # Set title of screen
@@ -66,6 +79,7 @@ def update_selected():
             else:
                 letters[i][j].SelectLetter(False)
 
+# Advance cursor on entry or tab.
 def advance_cursor(next_letter = False):
     global selected_row
     global selected_col
@@ -100,6 +114,7 @@ def advance_cursor(next_letter = False):
                     break
     update_selected()
 
+# Populate word class instances with their appropriate letters.
 def populate_words():
     global letters
 
@@ -114,40 +129,79 @@ def populate_words():
         words_across.append(Word(row_letters, True, i))
         words_down.append(Word(col_letters, False, j))        
 
+# Randomly generate the static starting letters.
 def get_start_letters():
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     start_letters = []
+    start_locations = []
     for i in range(3):
-        start_letters.append(alphabet(random.randint(0,25)))
+        start_letters.append(alphabet[random.randint(0,25)])
+    while len(start_locations) < 3:
+        random_1 = random.randint(0,4)
+        random_2 = random.randint(0,4)
+        location = str(random_1) + "," + str(random_2)
+        if location not in start_locations:
+            start_locations.append(location)
+    for i in range(len(start_locations)):
+        loc = start_locations[i].split(',')
+        letter = letters[int(loc[0])][int(loc[1])]
+        letter.text = start_letters[i]
+        letter.static = True
+
+# Update the game clock.
+def update_clock():
+    time_elapsed = pygame.time.get_ticks()//1000
+    game_clock = str(0) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"0:0{time_elapsed%60}"
+    clock_text = font.render(game_clock, True, "white")
+    clock_rect = clock_text.get_rect(center=(screen.get_width()/2, 10))
+    screen.blit(clock_text, clock_rect)
+
+def tally_score():
+    print("scoring")
 
 populate_words()
+get_start_letters()
 update_selected()
+
+finished_text = btn_font.render("Finish", True, "black")
+     
+    # superimposing the text onto our button
+
  
 # -------- Main Program Loop -----------
 while not done:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             done = True  # Flag that we are done so we exit this loop
+        if finish_clicked == True:
+            if event.type == pygame.MOUSEBUTTONUP:
+                if confirm_btn_rect.collidepoint(pygame.mouse.get_pos()):
+                    finish_confirmed = True
+                if cancel_btn_rect.collidepoint(pygame.mouse.get_pos()):
+                    finish_clicked = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos()
-
-            # Change the x/y screen coordinates to letters coordinates
-            new_col = (pos[0]-35) // (WIDTH + MARGIN)
-            new_row = (pos[1]-35) // (HEIGHT + MARGIN)
-            if new_row == selected_row and new_col == selected_col:
-                select_across = not select_across
-            else:
-                selected_row = new_row
-                selected_col = new_col
-            update_selected()
+            if pos[0] >= 35 and pos[0] <= 465 and pos[0] >= 35 and pos[1] <= 465:
+                # Change the x/y screen coordinates to letters coordinates
+                new_col = (pos[0]-35) // (cell_width + MARGIN)
+                new_row = (pos[1]-35) // (cell_height + MARGIN)
+                if new_row == selected_row and new_col == selected_col:
+                    select_across = not select_across
+                else:
+                    selected_row = new_row
+                    selected_col = new_col
+                update_selected()
             # Set that location to one
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if finished_rect.collidepoint(pygame.mouse.get_pos()):
+                finish_clicked = True
         elif event.type == pygame.KEYDOWN:
+            
             key = get_key_pressed(event)
             if key == "tab":
                 advance_cursor(True)
-            else:
-
+            elif letters[selected_row][selected_col].static != True:
                 letters[selected_row][selected_col].text = key
                 words_across[selected_row].check_word()
                 words_down[selected_col].check_word()
@@ -168,7 +222,45 @@ while not done:
 
     # Limit to 60 frames per second
     clock.tick(60)
- 
+
+    update_clock()
+
+    # Render finished btn
+    if finish_clicked == False:
+        finished_rect = pygame.draw.rect(screen, "gold", [screen_width/2-70,screen_height-65,140,40], border_radius=3)
+        pygame.draw.rect(screen, "gray", [screen_width/2-70,screen_height-65,140,40], 2, 3)
+        finish_text_rect = finished_text.get_rect(center=(screen.get_width()/2, screen_height-45))
+        screen.blit(finished_text , finish_text_rect)
+
+    # Confirm Finish rect
+    if finish_clicked:
+        #Parent rect
+        confirm_rect = pygame.draw.rect(screen, "gray", [40,40,420,420], border_radius=3)
+        pygame.draw.rect(screen, "white", [40,40,420,420], 2, 3)
+        if finish_confirmed == False:
+            #Confirm Text
+            info_text = btn_font.render("Are you sure you're finished?", True, "black")
+            info_text_rect = info_text.get_rect(center=(screen_width/2,screen_height/2-100))
+            screen.blit(info_text, info_text_rect)
+
+
+            #Confirm Btn
+            confirm_text = btn_font.render("Yes", True, "black")
+            confirm_btn_rect = pygame.draw.rect(screen, "gold", [screen_width/2-70-100,screen_height/2,140,40], border_radius=3)
+            pygame.draw.rect(screen, "black", [screen_width/2-70-100,screen_height/2,140,40], 2, border_radius=3)
+            confirm_text_rect = confirm_text.get_rect(center=(screen_width/2-70-30,screen_height/2+20))
+            screen.blit(confirm_text, confirm_text_rect)
+
+            #Cancel Btn
+            cancel_text = btn_font.render("Cancel", True, "black")
+            cancel_btn_rect = pygame.draw.rect(screen, "white", [screen_width/2-70+100,screen_height/2,140,40], border_radius=3)
+            pygame.draw.rect(screen, "black", [screen_width/2-70+100,screen_height/2,140,40], 2, border_radius=3)
+            
+            cancel_text_rect = cancel_text.get_rect(center=(screen_width/2-70+170,screen_height/2+20))
+            screen.blit(cancel_text, cancel_text_rect)
+        else:
+            tally_score()
+
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
  

@@ -5,9 +5,6 @@ import json
 data = open('word_list.json')
 dictionary = json.load(data)
 
-
-
-
 class Word():
     def __init__(self, *args):
         self.letters = args[0]
@@ -40,7 +37,6 @@ class Word():
                     letter.in_word_down = True
             else:
                 self.word_exists = False
-
                 if self.word_across:
                     letter.in_word_across = False
                 else:
