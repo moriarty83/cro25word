@@ -2,11 +2,14 @@ import pygame
 
 pygame.init()
 font = pygame.font.SysFont(None, 56)
+score_font = pygame.font.SysFont(None, 24)
+
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-letter_values = {"E":1,
+letter_values = {
+    "E":1,
     "A":1,
     "S":1,
-    "0":1,
+    "O":1,
     "T":1,
 
     "I": 2,
@@ -35,7 +38,6 @@ letter_values = {"E":1,
     "J": 5,
     }
 
-
 class Letter():
     def __init__(self, *args):
         self.screen = args[0]
@@ -52,8 +54,8 @@ class Letter():
         self.selected = False
         self.in_word_across = False
         self.in_word_down = False
-
-        
+        self.score = 0
+        self.game_over = False
         
     def SelectLetter(self, select=True):
         self.selected = select
@@ -85,28 +87,41 @@ class Letter():
 
         if self.text:
             text = font.render(self.text, True, "black")
-            self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin+self.offset,
-                    (self.margin + self.height) * self.row + self.margin+self.offset,
+            self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin+self.offset+10,
+                    (self.margin + self.height) * self.row + self.margin+self.offset+10,
                     self.width,
                     self.height])
+            if self.game_over:
+                score = score_font.render(f"{str(self.score)} pts", True, "black")
+                self.screen.blit(score, [(self.margin + self.width) * self.col + self.margin+self.offset+5,
+                    (self.margin + self.height) * self.row + self.margin+self.offset+62,
+                    self.width,
+                    self.height])
+
             
     def ScoreLetter(self):
-        
+        print(self.static)
+        self.game_over = True
         score = 0
+        if self.in_word_across == False and self.in_word_down == False:
+            return score
         if self.text == None:
             return score
         if self.in_word_across:
             score += 5
             if self.static:
                 score += 5
-        if self.in_word_across:
+        if self.in_word_down:
             score += 5
             if self.static:
                 score += 5
-        
-        
-
-            
+        try:
+            score += letter_values[self.text.upper()]
+        except:
+            score += 0
+        self.score = score
+        return score
+          
 # Letter scores inpsired by 
 # CROSSWORD PUZZLE LETTER FREQUENCIES
 # By JOHN D. IDTCHCOCK

@@ -1,10 +1,16 @@
 import pygame
 import random
+import datetime
 from pygame.locals import *
 from letter import *
 from word import *
 from key_input import *
 
+# Seed number
+current_date = datetime.date.today()
+
+seed = current_date.year*10000 + current_date.month * 100 + current_date.day
+random.seed(seed)
 # 
 select_across = True
 
@@ -35,9 +41,12 @@ font = pygame.font.SysFont(None, 24)
 btn_font = pygame.font.SysFont(None, 36)
 
 time_elapsed = 0
+total_score = 0
 
 finish_clicked = False
 finish_confirmed = False
+
+game_finished = False
 
  
 # Initialize pygame
@@ -157,7 +166,10 @@ def update_clock():
     screen.blit(clock_text, clock_rect)
 
 def tally_score():
-    print("scoring")
+    global total_score
+    for i in range(5):
+        for j in range(5):
+            total_score += letters[i][j].ScoreLetter()
 
 populate_words()
 get_start_letters()
@@ -223,7 +235,8 @@ while not done:
     # Limit to 60 frames per second
     clock.tick(60)
 
-    update_clock()
+    if game_finished == False:
+        update_clock()
 
     # Render finished btn
     if finish_clicked == False:
@@ -235,31 +248,38 @@ while not done:
     # Confirm Finish rect
     if finish_clicked:
         #Parent rect
-        confirm_rect = pygame.draw.rect(screen, "gray", [40,40,420,420], border_radius=3)
-        pygame.draw.rect(screen, "white", [40,40,420,420], 2, 3)
-        if finish_confirmed == False:
-            #Confirm Text
-            info_text = btn_font.render("Are you sure you're finished?", True, "black")
-            info_text_rect = info_text.get_rect(center=(screen_width/2,screen_height/2-100))
-            screen.blit(info_text, info_text_rect)
+        if game_finished == False:
+            confirm_rect = pygame.draw.rect(screen, "gray", [40,40,420,420], border_radius=3)
+            pygame.draw.rect(screen, "white", [40,40,420,420], 2, 3)
+            if finish_confirmed == False:
+                #Confirm Text
+                info_text = btn_font.render("Are you sure you're finished?", True, "black")
+                info_text_rect = info_text.get_rect(center=(screen_width/2,screen_height/2-100))
+                screen.blit(info_text, info_text_rect)
 
+                #Confirm Btn
+                confirm_text = btn_font.render("Yes", True, "black")
+                confirm_btn_rect = pygame.draw.rect(screen, "gold", [screen_width/2-70-100,screen_height/2,140,40], border_radius=3)
+                pygame.draw.rect(screen, "black", [screen_width/2-70-100,screen_height/2,140,40], 2, border_radius=3)
+                confirm_text_rect = confirm_text.get_rect(center=(screen_width/2-70-30,screen_height/2+20))
+                screen.blit(confirm_text, confirm_text_rect)
 
-            #Confirm Btn
-            confirm_text = btn_font.render("Yes", True, "black")
-            confirm_btn_rect = pygame.draw.rect(screen, "gold", [screen_width/2-70-100,screen_height/2,140,40], border_radius=3)
-            pygame.draw.rect(screen, "black", [screen_width/2-70-100,screen_height/2,140,40], 2, border_radius=3)
-            confirm_text_rect = confirm_text.get_rect(center=(screen_width/2-70-30,screen_height/2+20))
-            screen.blit(confirm_text, confirm_text_rect)
-
-            #Cancel Btn
-            cancel_text = btn_font.render("Cancel", True, "black")
-            cancel_btn_rect = pygame.draw.rect(screen, "white", [screen_width/2-70+100,screen_height/2,140,40], border_radius=3)
-            pygame.draw.rect(screen, "black", [screen_width/2-70+100,screen_height/2,140,40], 2, border_radius=3)
-            
-            cancel_text_rect = cancel_text.get_rect(center=(screen_width/2-70+170,screen_height/2+20))
-            screen.blit(cancel_text, cancel_text_rect)
-        else:
-            tally_score()
+                #Cancel Btn
+                cancel_text = btn_font.render("Cancel", True, "black")
+                cancel_btn_rect = pygame.draw.rect(screen, "white", [screen_width/2-70+100,screen_height/2,140,40], border_radius=3)
+                pygame.draw.rect(screen, "black", [screen_width/2-70+100,screen_height/2,140,40], 2, border_radius=3)
+                
+                cancel_text_rect = cancel_text.get_rect(center=(screen_width/2-70+170,screen_height/2+20))
+                screen.blit(cancel_text, cancel_text_rect)
+            else:
+                if game_finished == False:
+                    tally_score()
+                    game_finished = True
+        if game_finished == True:
+            final_score_text = btn_font.render(str(total_score), True, "white")
+            final_score_rect = pygame.draw.rect(screen, "black", [screen_width/2-70,screen_height-65,140,40])
+            final_score_text_rect = final_score_text.get_rect(center=(screen.get_width()/2, screen_height-45))
+            screen.blit(final_score_text, final_score_text_rect)
 
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
