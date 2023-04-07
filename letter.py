@@ -76,14 +76,14 @@ class Letter():
                                 [(self.margin + self.width) * self.col + self.margin+self.offset,
                                 (self.margin + self.height) * self.row + self.margin+self.offset,
                                 self.width,
-                                self.height], 2)
+                                self.height], 3)
             else:
                 pygame.draw.rect(self.screen,
                     "cyan",
                     [(self.margin + self.width) * self.col + self.margin+self.offset,
                     (self.margin + self.height) * self.row + self.margin+self.offset,
                     self.width,
-                    self.height], 2)
+                    self.height], 3)
 
         if self.text:
             text = font.render(self.text, True, "black")
