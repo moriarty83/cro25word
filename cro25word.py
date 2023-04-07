@@ -89,7 +89,7 @@ def update_selected():
                 letters[i][j].SelectLetter(False)
 
 # Advance cursor on entry or tab.
-def advance_cursor(next_letter = False):
+def advance_cursor(next_letter = False, prev_letter = False):
     global selected_row
     global selected_col
     global select_across
@@ -102,6 +102,15 @@ def advance_cursor(next_letter = False):
                 if letters[i][selected_col]:
                     length += 1
             selected_row = (selected_row + 1) % length
+    elif prev_letter == True:
+        if select_across:
+            selected_col = (selected_col - 1) % len(letters[selected_row])
+        else:
+            length = 0
+            for i in range(len(letters)):
+                if letters[i][selected_col]:
+                    length += 1
+            selected_row = (selected_row - 1) % length
     else:
         if select_across:
             length = len(letters[selected_row])
@@ -213,6 +222,8 @@ while not done:
             key = get_key_pressed(event)
             if key == "tab":
                 advance_cursor(True)
+            if key == "delete" or key == "backspace":
+                advance_cursor(False, True)
             elif letters[selected_row][selected_col].static != True:
                 letters[selected_row][selected_col].text = key
                 words_across[selected_row].check_word()
