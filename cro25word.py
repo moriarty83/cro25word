@@ -230,10 +230,11 @@ while not done:
             done = True  # Flag that we are done so we exit this loop
         if finish_clicked == True:
             if event.type == pygame.MOUSEBUTTONUP:
-                if confirm_btn_rect.collidepoint(pygame.mouse.get_pos()):
-                    finish_confirmed = True
-                if cancel_btn_rect.collidepoint(pygame.mouse.get_pos()):
-                    finish_clicked = False
+                if finish_clicked:
+                    if confirm_btn_rect.collidepoint(pygame.mouse.get_pos()):
+                        finish_confirmed = True
+                    if cancel_btn_rect.collidepoint(pygame.mouse.get_pos()):
+                        finish_clicked = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos()
@@ -249,7 +250,7 @@ while not done:
                 update_selected()
             # Set that location to one
         elif event.type == pygame.MOUSEBUTTONUP:
-            if finished_rect.collidepoint(pygame.mouse.get_pos()):
+            if finished_rect.collidepoint(pygame.mouse.get_pos()) and game_finished == False:
                 finish_clicked = True
         elif event.type == pygame.KEYDOWN:
             
