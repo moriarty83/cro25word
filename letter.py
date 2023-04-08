@@ -4,6 +4,12 @@ pygame.init()
 font = pygame.font.SysFont(None, 56)
 score_font = pygame.font.SysFont(None, 24)
 
+palette_green = pygame.Color("#99c98f") 
+palette_blue = pygame.Color("#8b98fc")
+palette_cyan1 = pygame.Color("#2fa89e")
+palette_cyan2 = pygame.Color("#5dc2b9")
+palette_light_gray = pygame.Color("#fff1bd")
+
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 letter_values = {
     "E":1,
@@ -62,7 +68,7 @@ class Letter():
             
 
     def RenderLetter(self):
-        self.color = "gray" if self.static == True else "blue" if self.in_word_across and self.in_word_down else "green" if self.in_word_across or self.in_word_down else "white"
+        self.color = "gray" if self.static == True else palette_blue if self.in_word_across and self.in_word_down else palette_green if self.in_word_across or self.in_word_down else palette_light_gray if self.selected == True else "white"
         pygame.draw.rect(self.screen,
                              self.color,
                              [(self.margin + self.width) * self.col + self.margin+self.offset,
@@ -72,18 +78,18 @@ class Letter():
         if self.selected:
             if self.active_letter:
                 pygame.draw.rect(self.screen,
-                                "purple",
+                                palette_cyan1,
                                 [(self.margin + self.width) * self.col + self.margin+self.offset,
                                 (self.margin + self.height) * self.row + self.margin+self.offset,
                                 self.width,
                                 self.height], 4)
             else:
                 pygame.draw.rect(self.screen,
-                    "purple",
+                    palette_cyan2,
                     [(self.margin + self.width) * self.col + self.margin+self.offset,
                     (self.margin + self.height) * self.row + self.margin+self.offset,
                     self.width,
-                    self.height], 2)
+                    self.height], 1)
 
         if self.text:
             text = font.render(self.text, True, "black")

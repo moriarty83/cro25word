@@ -180,8 +180,14 @@ def get_start_letters():
 def update_clock():
     time_elapsed = pygame.time.get_ticks()//1000
     game_clock = str(0) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"0:0{time_elapsed%60}"
+    date_text = font.render(current_date.strftime("%m-%d-%Y"), True, "white")
     clock_text = font.render(game_clock, True, "white")
-    clock_rect = clock_text.get_rect(center=(screen.get_width()/2, 10))
+
+    clock_rect = clock_text.get_rect(topright=(screen.get_width()-40, 10))
+    date_rect = date_text.get_rect(topleft=(40, 10))
+
+    screen.blit(date_text, date_rect)
+
     screen.blit(clock_text, clock_rect)
 
 def populate_session_data():
@@ -192,12 +198,13 @@ def populate_session_data():
     for letter in session.session_data["letters"]:
         letters[letter["row"]][letter["col"]].text = letter["text"]
         letters[letter["row"]][letter["col"]].static = letter["static"]
+    for word in words_across:
+            word.check_word()
+    for word in words_down:
+            word.check_word()
     if game_finished == True:
-        for word in words_across:
-            word.check_word()
-        for word in words_down:
-            word.check_word()
         tally_score()
+    
 
 
         
