@@ -5,6 +5,7 @@ from pygame.locals import *
 from letter import *
 from word import *
 from key_input import *
+from current_session import *
 
 # Seed number
 current_date = datetime.date.today()
@@ -39,6 +40,7 @@ words_in_use = []
 # Session Data
 font = pygame.font.SysFont(None, 24)
 btn_font = pygame.font.SysFont(None, 36)
+session = SessionData()
 
 time_elapsed = 0
 total_score = 0
@@ -193,6 +195,7 @@ finished_text = btn_font.render("Finish", True, "black")
 while not done:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
+            session.save_session(letters, time_elapsed, game_finished)
             done = True  # Flag that we are done so we exit this loop
         if finish_clicked == True:
             if event.type == pygame.MOUSEBUTTONUP:
@@ -222,8 +225,10 @@ while not done:
             key = get_key_pressed(event)
             if key == "tab":
                 advance_cursor(True)
-            if key == "delete" or key == "backspace":
+            elif key == "delete":
                 advance_cursor(False, True)
+                if letters[selected_row][selected_col].static != True:
+                    letters[selected_row][selected_col].text = None
             elif letters[selected_row][selected_col].static != True:
                 letters[selected_row][selected_col].text = key
                 words_across[selected_row].check_word()

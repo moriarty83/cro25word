@@ -56,3 +56,5 @@ def get_key_pressed(event):
         return "Z"
     if event.key == pygame.K_TAB:
         return "tab"
+    if event.key == pygame.K_BACKSPACE or event.key == pygame.K_DELETE:
+        return "delete"

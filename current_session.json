@@ -1,6 +1,1 @@
-{
-    "date": "None",
-    "time_elapsed": 0,
-    "starting_letters": "None",
-    "starting_coordinates": "None"
-}
+{"seed": 20230407, "letters": [{"row": 0, "col": 0, "text": "F", "static": true}, {"row": 0, "col": 1, "text": null, "static": false}, {"row": 0, "col": 2, "text": "Q", "static": true}, {"row": 0, "col": 3, "text": null, "static": false}, {"row": 0, "col": 4, "text": null, "static": false}, {"row": 1, "col": 0, "text": "O", "static": false}, {"row": 1, "col": 1, "text": null, "static": false}, {"row": 1, "col": 2, "text": null, "static": false}, {"row": 1, "col": 3, "text": null, "static": false}, {"row": 1, "col": 4, "text": null, "static": false}, {"row": 2, "col": 0, "text": "U", "static": false}, {"row": 2, "col": 1, "text": null, "static": false}, {"row": 2, "col": 2, "text": null, "static": false}, {"row": 2, "col": 3, "text": null, "static": false}, {"row": 2, "col": 4, "text": null, "static": false}, {"row": 3, "col": 0, "text": "L", "static": false}, {"row": 3, "col": 1, "text": null, "static": false}, {"row": 3, "col": 2, "text": null, "static": false}, {"row": 3, "col": 3, "text": null, "static": false}, {"row": 3, "col": 4, "text": null, "static": false}, {"row": 4, "col": 0, "text": "S", "static": false}, {"row": 4, "col": 1, "text": null, "static": false}, {"row": 4, "col": 2, "text": null, "static": false}, {"row": 4, "col": 3, "text": "M", "static": true}, {"row": 4, "col": 4, "text": null, "static": false}], "time_elapsed": 0, "game_finished": false}
