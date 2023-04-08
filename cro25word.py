@@ -7,10 +7,18 @@ from word import *
 from key_input import *
 from current_session import *
 
+#Session Data
+session = SessionData()
+previous_session = False
+
+
 # Seed number
 current_date = datetime.date.today()
 
 seed = current_date.year*10000 + current_date.month * 100 + current_date.day
+if seed == session.session_data['seed']:
+    previous_session = True
+    print("active game!")
 random.seed(seed)
 # 
 select_across = True
@@ -40,7 +48,7 @@ words_in_use = []
 # Session Data
 font = pygame.font.SysFont(None, 24)
 btn_font = pygame.font.SysFont(None, 36)
-session = SessionData()
+
 
 time_elapsed = 0
 total_score = 0
@@ -176,6 +184,25 @@ def update_clock():
     clock_rect = clock_text.get_rect(center=(screen.get_width()/2, 10))
     screen.blit(clock_text, clock_rect)
 
+def populate_session_data():
+    global time_elapsed 
+    global game_finished
+    time_elapsed = session.session_data["time_elapsed"]
+    game_finished = session.session_data["game_finished"]
+    for letter in session.session_data["letters"]:
+        letters[letter["row"]][letter["col"]].text = letter["text"]
+        letters[letter["row"]][letter["col"]].static = letter["static"]
+    if game_finished == True:
+        for word in words_across:
+            word.check_word()
+        for word in words_down:
+            word.check_word()
+        tally_score()
+
+
+        
+        
+
 def tally_score():
     global total_score
     for i in range(5):
@@ -183,7 +210,11 @@ def tally_score():
             total_score += letters[i][j].ScoreLetter()
 
 populate_words()
-get_start_letters()
+
+if previous_session == True:
+    populate_session_data()
+else:
+    get_start_letters()
 update_selected()
 
 finished_text = btn_font.render("Finish", True, "black")
@@ -291,11 +322,11 @@ while not done:
                 if game_finished == False:
                     tally_score()
                     game_finished = True
-        if game_finished == True:
-            final_score_text = btn_font.render(str(total_score), True, "white")
-            final_score_rect = pygame.draw.rect(screen, "black", [screen_width/2-70,screen_height-65,140,40])
-            final_score_text_rect = final_score_text.get_rect(center=(screen.get_width()/2, screen_height-45))
-            screen.blit(final_score_text, final_score_text_rect)
+    if game_finished == True:
+        final_score_text = btn_font.render(str(total_score), True, "white")
+        final_score_rect = pygame.draw.rect(screen, "black", [screen_width/2-70,screen_height-65,140,40])
+        final_score_text_rect = final_score_text.get_rect(center=(screen.get_width()/2, screen_height-45))
+        screen.blit(final_score_text, final_score_text_rect)
 
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
