@@ -2,6 +2,8 @@ import pygame
 
 pygame.init()
 font = pygame.font.SysFont(None, 56)
+static_font = pygame.font.SysFont(None, 56)
+static_font.underline = True
 score_font = pygame.font.SysFont(None, 24)
 
 palette_green = pygame.Color("#99c98f") 
@@ -9,6 +11,9 @@ palette_blue = pygame.Color("#8b98fc")
 palette_cyan1 = pygame.Color("#2fa89e")
 palette_cyan2 = pygame.Color("#5dc2b9")
 palette_light_gray = pygame.Color("#fff1bd")
+palette_dark_gray = pygame.Color("#3f3f3f")
+palette_gold = pygame.Color("#e0b14a")
+palette_purple = pygame.Color("#8460a3")
 
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 letter_values = {
@@ -68,7 +73,7 @@ class Letter():
             
 
     def RenderLetter(self):
-        self.color = "gray" if self.static == True else palette_blue if self.in_word_across and self.in_word_down else palette_green if self.in_word_across or self.in_word_down else palette_light_gray if self.selected == True else "white"
+        self.color = palette_gold if self.static and self.in_word_down and self.in_word_across else palette_purple if self.static and self.in_word_across or self.static and self.in_word_down else palette_blue if self.in_word_across and self.in_word_down else palette_green if self.in_word_across or self.in_word_down else palette_light_gray if self.selected == True else "white"
         pygame.draw.rect(self.screen,
                              self.color,
                              [(self.margin + self.width) * self.col + self.margin+self.offset,
@@ -92,11 +97,19 @@ class Letter():
                     self.height], 1)
 
         if self.text:
-            text = font.render(self.text, True, "black")
-            self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin+self.offset+10,
+            if self.static:
+                text = static_font.render(self.text, True, "black")
+                self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin+self.offset+10,
                     (self.margin + self.height) * self.row + self.margin+self.offset+10,
                     self.width,
                     self.height])
+            else: 
+                newfont = font.underline
+                text = font.render(self.text, True, "black")
+                self.screen.blit(text, [(self.margin + self.width) * self.col + self.margin+self.offset+10,
+                        (self.margin + self.height) * self.row + self.margin+self.offset+10,
+                        self.width,
+                        self.height])
             if self.game_over:
                 score = score_font.render(f"{str(self.score)} pts", True, "black")
                 self.screen.blit(score, [(self.margin + self.width) * self.col + self.margin+self.offset+5,

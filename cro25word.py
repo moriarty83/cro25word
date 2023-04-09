@@ -10,15 +10,17 @@ from current_session import *
 #Session Data
 session = SessionData()
 previous_session = False
+saved_time_elapsed = 0
 
 
 # Seed number
 current_date = datetime.date.today()
 
 seed = current_date.year*10000 + current_date.month * 100 + current_date.day
-if seed == session.session_data['seed']:
-    previous_session = True
-    print("active game!")
+if session.session_data != None:
+    if seed == session.session_data['seed']:
+        previous_session = True
+        print("active game!")
 random.seed(seed)
 # 
 select_across = True
@@ -178,7 +180,7 @@ def get_start_letters():
 
 # Update the game clock.
 def update_clock():
-    time_elapsed = pygame.time.get_ticks()//1000
+    time_elapsed = pygame.time.get_ticks()//1000 + saved_time_elapsed
     game_clock = str(0) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"0:0{time_elapsed%60}"
     date_text = font.render(current_date.strftime("%m-%d-%Y"), True, "white")
     clock_text = font.render(game_clock, True, "white")
@@ -191,9 +193,9 @@ def update_clock():
     screen.blit(clock_text, clock_rect)
 
 def populate_session_data():
-    global time_elapsed 
+    global saved_time_elapsed
     global game_finished
-    time_elapsed = session.session_data["time_elapsed"]
+    saved_time_elapsed = session.session_data["time_elapsed"]
     game_finished = session.session_data["game_finished"]
     for letter in session.session_data["letters"]:
         letters[letter["row"]][letter["col"]].text = letter["text"]
@@ -233,7 +235,7 @@ finished_text = btn_font.render("Finish", True, "black")
 while not done:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
-            session.save_session(letters, time_elapsed, game_finished)
+            session.save_session(letters, pygame.time.get_ticks()//1000+saved_time_elapsed, game_finished)
             done = True  # Flag that we are done so we exit this loop
         if finish_clicked == True:
             if event.type == pygame.MOUSEBUTTONUP:
@@ -265,9 +267,9 @@ while not done:
             if key == "tab":
                 advance_cursor(True)
             elif key == "delete":
-                advance_cursor(False, True)
                 if letters[selected_row][selected_col].static != True:
                     letters[selected_row][selected_col].text = None
+                advance_cursor(False, True)
             elif letters[selected_row][selected_col].static != True:
                 letters[selected_row][selected_col].text = key
                 words_across[selected_row].check_word()

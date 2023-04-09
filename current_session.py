@@ -1,15 +1,32 @@
 import json
-
 from datetime import date
-import json
+import os
+import sys
+
+filename = 'current_session.json'
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    path = os.path.expanduser('~')
+    filename= os.path.join(os.path.expanduser('~'), '.current_session.json')
+else:
+    print('running in a normal Python process')
+print(filename)
 
 
-data = open('current_session.json')
 try:
-    session_data = json.load(data)
+    data = open(filename)
 except:
+    data = None
+print(data)
+if data != None:
+    print("data isn't none")
+    session_data = json.load(data)
+    data.close()
+
+else:
+    print("data is none")
     session_data = None
-data.close()
+
+
 
 class SessionData():
     def __init__(self, *args):
@@ -32,7 +49,7 @@ class SessionData():
             "game_finished": game_finished
         }
         print(session_dict)
-        with open('current_session.json', 'w') as outfile:
+        with open(filename, 'w') as outfile:
             json.dump(session_dict, outfile)
 
 

@@ -1,8 +1,15 @@
 import pygame
-
+import os
+import sys
 import json
 
-data = open('word_list.json')
+filename = 'word_list.json'
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    os.chdir(sys._MEIPASS)
+    filename= os.path.join(sys._MEIPASS, 'word_list.json')
+else:
+    print('running in a normal Python process')
+data = open(filename)
 dictionary = json.load(data)
 
 class Word():

@@ -2,7 +2,7 @@
 The inspiration for Cro25word is the strong community/competitive aspect of hte puzzle game Wordle. Cro25word is a game that lets people showcase their wit and creativity in a structured crossword-like setting.
 
 ## What it does
-Cro25word is a reverse crossword game.
+Cro25word is a reverse crossword game. Players are presented with a 5x5 grid.
 
 ## How we built it
 
