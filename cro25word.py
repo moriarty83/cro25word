@@ -5,6 +5,7 @@ from pygame.locals import *
 from letter import *
 from word import *
 from key_input import *
+from info import *
 from current_session import *
 
 #Session Data
@@ -15,14 +16,13 @@ saved_time_elapsed = 0
 
 # Seed number
 current_date = datetime.date.today()
-
 seed = current_date.year*10000 + current_date.month * 100 + current_date.day
 if session.session_data != None:
     if seed == session.session_data['seed']:
         previous_session = True
-        print("active game!")
 random.seed(seed)
-# 
+
+# Row/Letter Select
 select_across = True
 
 selected_row = 0
@@ -50,15 +50,16 @@ words_in_use = []
 # Session Data
 font = pygame.font.SysFont(None, 24)
 btn_font = pygame.font.SysFont(None, 36)
-
-
+completion_bonus = True
 time_elapsed = 0
 total_score = 0
 
-finish_clicked = False
-finish_confirmed = False
-
 game_finished = False
+
+# UI Control Variables
+finish_confirmed = False
+finish_clicked = False
+show_info = False
 
  
 # Initialize pygame
@@ -77,6 +78,7 @@ done = False
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
 
+# Create Letters
 for row in range(5):
     # Add an empty array that will hold each cell
     # in this row
@@ -84,7 +86,12 @@ for row in range(5):
     for column in range(5):
         letters[row].append(Letter(screen, row, column))  # Append a cell
 
-# METHODS
+# Instantiate info class.
+info = GameInfo(screen)
+
+########## METHODS #############
+
+# Update which Letter is Selected
 def update_selected():
     for i in range(len(letters)):
         for j in range(len(letters[i])):
@@ -100,7 +107,7 @@ def update_selected():
             else:
                 letters[i][j].SelectLetter(False)
 
-# Advance cursor on entry or tab.
+# Advance selected letter on entry or tab, go back on delete or backspace
 def advance_cursor(next_letter = False, prev_letter = False):
     global selected_row
     global selected_col
@@ -192,6 +199,7 @@ def update_clock():
 
     screen.blit(clock_text, clock_rect)
 
+# Get session data from saved json if exists. 
 def populate_session_data():
     global saved_time_elapsed
     global game_finished
@@ -206,44 +214,56 @@ def populate_session_data():
             word.check_word()
     if game_finished == True:
         tally_score()
-    
-
-
-        
-        
-
+       
+# Tally final game score.
 def tally_score():
+    global completion_bonus
     global total_score
     for i in range(5):
         for j in range(5):
-            total_score += letters[i][j].ScoreLetter()
+            letter_score = letters[i][j].ScoreLetter()
+            if letter_score == 0:
+                completion_bonus = False
+            total_score += letter_score
+    if completion_bonus == True:
+        total_score += 100
 
+# Populate words from letters.
 populate_words()
 
+# If a previous session is in place, populate it, otherwise, start fresh.
 if previous_session == True:
     populate_session_data()
 else:
     get_start_letters()
+
+# Select first letter.    
 update_selected()
 
+# Initate Finished btn text.
 finished_text = btn_font.render("Finish", True, "black")
-     
-    # superimposing the text onto our button
+close_info_text = btn_font.render("Close", True, "white")
 
+     
  
 # -------- Main Program Loop -----------
 while not done:
-    for event in pygame.event.get():  # User did something
+    #Loop Through Events
+    for event in pygame.event.get():
         if event.type == pygame.QUIT:  # If user clicked close
             session.save_session(letters, pygame.time.get_ticks()//1000+saved_time_elapsed, game_finished)
             done = True  # Flag that we are done so we exit this loop
+        # If they've clciked the finish button.
         if finish_clicked == True:
             if event.type == pygame.MOUSEBUTTONUP:
                 if finish_clicked:
+                    # Check for confirm finishing
                     if confirm_btn_rect.collidepoint(pygame.mouse.get_pos()):
                         finish_confirmed = True
+                    # Check for canceling finishing
                     if cancel_btn_rect.collidepoint(pygame.mouse.get_pos()):
                         finish_clicked = False
+        # Other mouse clicks
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos()
@@ -259,8 +279,15 @@ while not done:
                 update_selected()
             # Set that location to one
         elif event.type == pygame.MOUSEBUTTONUP:
-            if finished_rect.collidepoint(pygame.mouse.get_pos()) and game_finished == False:
-                finish_clicked = True
+            print(show_info)
+            if show_info == True:
+                if info_btn_rect.collidepoint(pygame.mouse.get_pos()) or close_text_rect.collidepoint(pygame.mouse.get_pos()):
+                    show_info = False
+            else:
+                if info_btn_rect.collidepoint(pygame.mouse.get_pos()):
+                    show_info = True
+                if finished_rect.collidepoint(pygame.mouse.get_pos()) and game_finished == False:
+                    finish_clicked = True
         elif event.type == pygame.KEYDOWN:
             
             key = get_key_pressed(event)
@@ -296,13 +323,13 @@ while not done:
         update_clock()
 
     # Render finished btn
-    if finish_clicked == False:
+    if finish_clicked == False and show_info == False:
         finished_rect = pygame.draw.rect(screen, "gold", [screen_width/2-70,screen_height-65,140,40], border_radius=3)
         pygame.draw.rect(screen, "gray", [screen_width/2-70,screen_height-65,140,40], 2, 3)
         finish_text_rect = finished_text.get_rect(center=(screen.get_width()/2, screen_height-45))
         screen.blit(finished_text , finish_text_rect)
 
-    # Confirm Finish rect
+    # Confirm Finish 
     if finish_clicked:
         #Parent rect
         if game_finished == False:
@@ -337,6 +364,19 @@ while not done:
         final_score_rect = pygame.draw.rect(screen, "black", [screen_width/2-70,screen_height-65,140,40])
         final_score_text_rect = final_score_text.get_rect(center=(screen.get_width()/2, screen_height-45))
         screen.blit(final_score_text, final_score_text_rect)
+
+    if show_info == True:
+        info.RenderInfo()
+        close_rect = pygame.draw.rect(screen, "black", [screen_width/2-70,screen_height-65,140,40], border_radius=3)
+        pygame.draw.rect(screen, "white", [screen_width/2-70,screen_height-65,140,40], 2, 3)
+        close_text_rect = close_info_text.get_rect(center=(screen.get_width()/2, screen_height-45))
+        screen.blit(close_info_text , close_text_rect)
+        
+    info_text = btn_font.render("?", True, "white")
+    info_btn_rect = pygame.draw.rect(screen, "black", [screen_width-40 ,screen_height-40,30,30], border_radius=3)
+    info_btn_rect = info_text.get_rect(center=(screen_width-25 ,screen_height-25))
+    screen.blit(info_text , info_btn_rect)
+
 
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
