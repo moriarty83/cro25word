@@ -1,3 +1,9 @@
+## Installation
+1. Clone this repo.
+2. Navigate to the repo folder in your terminal.
+3. Run 'pip -r requirements.txt'
+4. Run 'python cro25word.py'
+
 ## Inspiration
 Cro25word (pronounced ‘crossword’) is a puzzle game inspired by the competitive and communal aspects of Wordle, the logic challenge of Sudoku and a classic crossword puzzle. The result is a daily puzzle for players to challenge their brain and vocabulary and showcase their wit and verbal creativity.
 
@@ -12,18 +18,22 @@ All letters are worth 5 points for each word they appear in, i.e., 5 points when
 Fixed letters are worth an additional 5 points per word they are in, so 10 points when used in one word and 20 points when used in both an across and down word together.
 
 Additional points are awarded for specific letters. Point values are inspired by the paper "Crossword Puzzle Letter Frequencies" by John. D. Hitchcock, Laramie, WI, and are as follows:
-|Letter | |       |Letter |Points |       |Letter |Points |
-|-------|-------|-------|-------|-------|-------|-------|-------|
-|E      |1      |       |U      |3      |       |F      |5      |
-|A      |1      |       |P      |3      |       |V      |5      |
-|S      |1      |       |M      |3      |       |Z      |5      |
-|O      |1      |       |C      |3      |       |X      |5      |
-|T      |1      |       |G      |3      |       |Q      |5      |
-|I      |2      |       |Y      |4      |       |J      |5      |
-|R      |2      |       |B      |4      |
-|N      |2      |       |H      |4      |
-|L      |2      |       |K      |4      |
-|D      |2      |       |W      |4      |
+
+###### 1 Point
+E, A, S, O, T
+
+###### 2 Points
+I, R, N, L, D
+
+###### 3 Points
+U, P, M, C, G
+
+###### 4 Points
+B, H, K, W, Y
+
+###### 5 Points
+F, V, Z, X, Q, J
+
 
 ## How we built it
 Cro25word was built over ten major stages using PyGame and no other major libraries or modules. Standard python modules used include Math, Random, JSON, Sys, OS & DateTime
