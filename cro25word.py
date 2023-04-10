@@ -188,7 +188,8 @@ def get_start_letters():
 # Update the game clock.
 def update_clock():
     time_elapsed = pygame.time.get_ticks()//1000 + saved_time_elapsed
-    game_clock = str(0) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"0:0{time_elapsed%60}"
+    print(time_elapsed)
+    game_clock = str(time_elapsed//60) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"{str(time_elapsed//60)}:0{time_elapsed%60}"
     date_text = font.render(current_date.strftime("%m-%d-%Y"), True, "white")
     clock_text = font.render(game_clock, True, "white")
 
@@ -254,6 +255,12 @@ while not done:
             session.save_session(letters, pygame.time.get_ticks()//1000+saved_time_elapsed, game_finished)
             done = True  # Flag that we are done so we exit this loop
         # If they've clciked the finish button.
+
+        # Quit for clicking X for online use:
+        if event.type == pygame.MOUSEBUTTONUP:
+            if quit_btn_rect.collidepoint(pygame.mouse.get_pos()):
+                session.save_session(letters, pygame.time.get_ticks()//1000+saved_time_elapsed, game_finished)
+                done = True
         if finish_clicked == True:
             if event.type == pygame.MOUSEBUTTONUP:
                 if finish_clicked:
@@ -376,6 +383,11 @@ while not done:
     info_btn_rect = pygame.draw.rect(screen, "black", [screen_width-40 ,screen_height-40,30,30], border_radius=3)
     info_btn_rect = info_text.get_rect(center=(screen_width-25 ,screen_height-25))
     screen.blit(info_text , info_btn_rect)
+
+    quit_text = btn_font.render("X", True, "white")
+    quit_btn_rect = pygame.draw.rect(screen, "black", [40 ,screen_height-40,30,30], border_radius=3)
+    quit_btn_rect = quit_text.get_rect(center=(25 ,screen_height-25))
+    screen.blit(quit_text , quit_btn_rect)
 
 
     # Go ahead and update the screen with what we've drawn.

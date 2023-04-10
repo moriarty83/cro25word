@@ -15,8 +15,8 @@ how_tos = ["Fill the board with as many 5-letter English words", "as possible be
 color_scores = [
     {"color": pygame.Color("#99c98f"), "points": "5 pts"},
     {"color": pygame.Color("#8b98fc"), "points": "10 pts"},
-    {"color": pygame.Color("#e0b14a"), "points": "10 pts"},
-    {"color": pygame.Color("#8460a3"), "points": "20 pts"},
+    {"color": pygame.Color("#8460a3"), "points": "10 pts"},
+    {"color": pygame.Color("#e0b14a"), "points": "20 pts"},
 ]
 one_point_letters = ["A", "E", "O", "S", "T"]
 two_point_letters = ["D", "I", "L", "N", "R"]
