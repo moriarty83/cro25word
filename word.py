@@ -8,6 +8,7 @@ symbol_font = pygame.font.SysFont(None, 36)
 filename = 'word_list.json'
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     os.chdir(sys._MEIPASS)
+    print(os.listdir(sys._MEIPASS))
     filename= os.path.join(sys._MEIPASS, 'word_list.json')
 else:
     print('running in a normal Python process')

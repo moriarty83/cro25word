@@ -8,8 +8,6 @@ from key_input import *
 from info import *
 from current_session import *
 
-#✓ X
-
 #Session Data
 session = SessionData()
 previous_session = False
