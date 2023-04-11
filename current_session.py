@@ -9,21 +9,17 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     filename= os.path.join(os.path.expanduser('~'), '.current_session.json')
 else:
     print('running in a normal Python process')
-print(filename)
 
 
 try:
     data = open(filename)
 except:
     data = None
-print(data)
 if data != None:
-    print("data isn't none")
     session_data = json.load(data)
     data.close()
 
 else:
-    print("data is none")
     session_data = None
 
 
@@ -48,7 +44,6 @@ class SessionData():
             "time_elapsed": time_elapsed,
             "game_finished": game_finished
         }
-        print(session_dict)
         with open(filename, 'w') as outfile:
             json.dump(session_dict, outfile)
 

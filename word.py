@@ -3,6 +3,8 @@ import os
 import sys
 import json
 
+symbol_font = pygame.font.SysFont(None, 36)
+
 filename = 'word_list.json'
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     os.chdir(sys._MEIPASS)
@@ -19,7 +21,7 @@ class Word():
         self.word_across = args[1]
         self.row = None if self.word_across == False else args[2]
         self.col = None if self.word_across == True else args[2]
-
+        
     def check_word(self):
         word_found = False
         word_string = ""
@@ -30,7 +32,6 @@ class Word():
             else:
                 word_string = word_string + letter.text
         if len(word_string) == len(self.letters):
-            print(word_string)
             try:
                 word_found = True if dictionary[word_string.lower()] == 1 else False  
             except:
@@ -49,3 +50,13 @@ class Word():
                 else:
                     letter.in_word_down = False
         return word_found
+    
+    def render_check(self, screen, index):
+        if self.word_exists == True:
+            icon = pygame.image.load('green_check.png')
+            
+            x_val = 20 if self.word_across == True else index * 85 + 73
+            y_val = index*85 + 115 if self.word_across == True else 60
+            screen.blit(icon, (x_val, y_val))
+
+        

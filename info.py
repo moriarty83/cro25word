@@ -15,7 +15,6 @@ how_tos = ["Fill the board with as many 5-letter English words", "as possible be
 color_scores = [
     {"color": pygame.Color("#99c98f"), "points": "5 pts"},
     {"color": pygame.Color("#8b98fc"), "points": "10 pts"},
-    {"color": pygame.Color("#8460a3"), "points": "10 pts"},
     {"color": pygame.Color("#e0b14a"), "points": "20 pts"},
 ]
 one_point_letters = ["A", "E", "O", "S", "T"]
@@ -35,7 +34,7 @@ class GameInfo():
         
     def RenderInfo(self):
         
-        info_rect = pygame.draw.rect(self.screen, "black", [40,40,420,420])
+        info_rect = pygame.draw.rect(self.screen, "black", [40,40,500,550])
         headline_text = headline_font.render(self.headline, True, "white")
         headline_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2,50,100,30], border_radius=3)
         headline_rect = headline_text.get_rect(center=(self.screen.get_width()/2 , 50))
@@ -53,7 +52,7 @@ class GameInfo():
         self.screen.blit(scoring_text, scoring_text_rect)
 
         for i in range(len(color_scores)):
-            offset = -150 if i == 0 else -50 if i == 1 else 50 if i == 2 else 150
+            offset = -150 if i == 0 else 0 if i == 1 else 150
             color_rect = pygame.draw.rect(self.screen, color_scores[i]["color"], [self.screen.get_width()/2 + offset - 30,220,60,60], border_radius=3)
             score_text = how_to_font.render(color_scores[i]["points"], True, "white")
             score_text_rect = scoring_text.get_rect(center=(self.screen.get_width()/2 + offset + 23, 250))
@@ -71,7 +70,7 @@ class GameInfo():
         letter_header_2 = letter_header_font.render("2 Pts", True, "white")
         letter_header2_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2-110,300,50,30])
         self.screen.blit(letter_header_2, letter_header2_rect)
-        for i in range (len(one_point_letters)):
+        for i in range (len(two_point_letters)):
             letter_text = how_to_font.render(two_point_letters[i], True, "white")
             letter_text_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2-110,320+(i*20),50,30])
             self.screen.blit(letter_text, letter_text_rect)
@@ -79,7 +78,7 @@ class GameInfo():
         letter_header_3 = letter_header_font.render("3 Pts", True, "white")
         letter_header3_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2-10,300,50,30])
         self.screen.blit(letter_header_3, letter_header3_rect)
-        for i in range (len(one_point_letters)):
+        for i in range (len(three_point_letters)):
             letter_text = how_to_font.render(three_point_letters[i], True, "white")
             letter_text_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2-10,320+(i*20),50,30])
             self.screen.blit(letter_text, letter_text_rect)
@@ -88,15 +87,15 @@ class GameInfo():
         letter_header4_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2+90,300,50,30])
         self.screen.blit(letter_header_4, letter_header4_rect)
         for i in range (len(four_point_letters)):
-            letter_text = how_to_font.render(three_point_letters[i], True, "white")
+            letter_text = how_to_font.render(four_point_letters[i], True, "white")
             letter_text_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2+90,320+(i*20),50,30])
             self.screen.blit(letter_text, letter_text_rect)
 
         letter_header_5 = letter_header_font.render("5 Pts", True, "white")
         letter_header5_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2+190,300,50,30])
         self.screen.blit(letter_header_5, letter_header5_rect)
-        for i in range (len(four_point_letters)):
-            letter_text = how_to_font.render(three_point_letters[i], True, "white")
+        for i in range (len(five_point_letters)):
+            letter_text = how_to_font.render(five_point_letters[i], True, "white")
             letter_text_rect = pygame.draw.rect(self.screen, "black", [self.screen.get_width()/2+190,320+(i*20),50,30])
             self.screen.blit(letter_text, letter_text_rect)
 

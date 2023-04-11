@@ -8,6 +8,8 @@ from key_input import *
 from info import *
 from current_session import *
 
+#✓ X
+
 #Session Data
 session = SessionData()
 previous_session = False
@@ -34,7 +36,7 @@ cell_height = 80
 
 # Screen dimensions
 screen_width = 500
-screen_height = 550
+screen_height = 600
  
 # This sets the margin between each letter.
 MARGIN = 5
@@ -66,7 +68,7 @@ show_info = False
 pygame.init()
  
 # Set the HEIGHT and WIDTH of the screen
-WINDOW_SIZE = [500, 550]
+WINDOW_SIZE = [screen_width, screen_height]
 screen = pygame.display.set_mode(WINDOW_SIZE)
  
 # Set title of screen
@@ -185,10 +187,9 @@ def get_start_letters():
         letter.text = start_letters[i]
         letter.static = True
 
-# Update the game clock.
+# Update the game clock.``
 def update_clock():
     time_elapsed = pygame.time.get_ticks()//1000 + saved_time_elapsed
-    print(time_elapsed)
     game_clock = str(time_elapsed//60) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"{str(time_elapsed//60)}:0{time_elapsed%60}"
     date_text = font.render(current_date.strftime("%m-%d-%Y"), True, "white")
     clock_text = font.render(game_clock, True, "white")
@@ -209,10 +210,13 @@ def populate_session_data():
     for letter in session.session_data["letters"]:
         letters[letter["row"]][letter["col"]].text = letter["text"]
         letters[letter["row"]][letter["col"]].static = letter["static"]
-    for word in words_across:
-            word.check_word()
-    for word in words_down:
-            word.check_word()
+    for i in range(len(words_across)):
+            words_across[i].check_word()
+            words_across[i].render_check(screen, i)
+    for i in range(len(words_down)):
+            words_down[i].check_word()
+            words_down[i].render_check(screen, i)
+
     if game_finished == True:
         tally_score()
        
@@ -223,11 +227,26 @@ def tally_score():
     for i in range(5):
         for j in range(5):
             letter_score = letters[i][j].ScoreLetter()
-            if letter_score == 0:
-                completion_bonus = False
             total_score += letter_score
+    for i in range(len(words_across)):
+        if words_across[i].word_exists == False:
+            completion_bonus = False
+            break
+    if completion_bonus == True:
+        for i in range(len(words_across)):
+            if words_across[i].word_exists == False:
+                completion_bonus = False
+                break
     if completion_bonus == True:
         total_score += 100
+
+def render_word_checks():
+    for i in range(len(words_across)):
+            words_across[i].check_word()
+            words_across[i].render_check(screen, i)
+    for i in range(len(words_down)):
+            words_down[i].check_word()
+            words_down[i].render_check(screen, i)
 
 # Populate words from letters.
 populate_words()
@@ -274,10 +293,10 @@ while not done:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             # User clicks the mouse. Get the position
             pos = pygame.mouse.get_pos()
-            if pos[0] >= 35 and pos[0] <= 465 and pos[0] >= 35 and pos[1] <= 465:
+            if pos[0] >= 35 and pos[0] <= 465 and pos[0] >= 75 and pos[1] <= 505:
                 # Change the x/y screen coordinates to letters coordinates
                 new_col = (pos[0]-35) // (cell_width + MARGIN)
-                new_row = (pos[1]-35) // (cell_height + MARGIN)
+                new_row = (pos[1]-75) // (cell_height + MARGIN)
                 if new_row == selected_row and new_col == selected_col:
                     select_across = not select_across
                 else:
@@ -286,7 +305,6 @@ while not done:
                 update_selected()
             # Set that location to one
         elif event.type == pygame.MOUSEBUTTONUP:
-            print(show_info)
             if show_info == True:
                 if info_btn_rect.collidepoint(pygame.mouse.get_pos()) or close_text_rect.collidepoint(pygame.mouse.get_pos()):
                     show_info = False
@@ -335,13 +353,14 @@ while not done:
         pygame.draw.rect(screen, "gray", [screen_width/2-70,screen_height-65,140,40], 2, 3)
         finish_text_rect = finished_text.get_rect(center=(screen.get_width()/2, screen_height-45))
         screen.blit(finished_text , finish_text_rect)
+        render_word_checks()
 
     # Confirm Finish 
     if finish_clicked:
         #Parent rect
         if game_finished == False:
-            confirm_rect = pygame.draw.rect(screen, "gray", [40,40,420,420], border_radius=3)
-            pygame.draw.rect(screen, "white", [40,40,420,420], 2, 3)
+            confirm_rect = pygame.draw.rect(screen, "gray", [40,80,420,420], border_radius=3)
+            pygame.draw.rect(screen, "white", [40,80,420,420], 2, 3)
             if finish_confirmed == False:
                 #Confirm Text
                 info_text = btn_font.render("Are you sure you're finished?", True, "black")
@@ -365,6 +384,7 @@ while not done:
             else:
                 if game_finished == False:
                     tally_score()
+                    render_word_checks()
                     game_finished = True
     if game_finished == True:
         final_score_text = btn_font.render(str(total_score), True, "white")
