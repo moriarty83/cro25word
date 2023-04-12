@@ -1,8 +1,15 @@
 ## Installation
 1. Clone this repo.
 2. Navigate to the repo folder in your terminal.
+
+###### For Mac:
+3. Navigate to the dist folder in the project repo and open the cro24word executable.
+* Note: It will probably be necessary to go to System Preferences -> Security & Privacy -> General, and allow the application to run.
+
+###### For PC:
 3. Run 'pip -r requirements.txt'
 4. Run 'python cro25word.py'
+* Note: Please make sure you are running Python 3.7 or higher.
 
 ## Inspiration
 Cro25word (pronounced ‘crossword’) is a puzzle game inspired by the competitive and communal aspects of Wordle, the logic challenge of Sudoku and a classic crossword puzzle. The result is a daily puzzle for players to challenge their brain and vocabulary and showcase their wit and verbal creativity.
