@@ -188,12 +188,12 @@ def get_start_letters():
 # Update the game clock.``
 def update_clock():
     time_elapsed = pygame.time.get_ticks()//1000 + saved_time_elapsed
-    game_clock = str(time_elapsed//60) + ":" + str(time_elapsed%60) if time_elapsed%60 > 9 else f"{str(time_elapsed//60)}:0{time_elapsed%60}"
+    game_clock = f"{str(time_elapsed//60)}:{str(time_elapsed%60)}" if time_elapsed%60 > 9 else f"{str(time_elapsed//60)}:0{time_elapsed%60}"
     date_text = font.render(current_date.strftime("%m-%d-%Y"), True, "white")
     clock_text = font.render(game_clock, True, "white")
 
-    clock_rect = clock_text.get_rect(topright=(screen.get_width()-40, 10))
-    date_rect = date_text.get_rect(topleft=(40, 10))
+    clock_rect = clock_text.get_rect(center=(screen.get_width()/2, 40))
+    date_rect = date_text.get_rect(center=(screen.get_width()/2, 20))
 
     screen.blit(date_text, date_rect)
 
@@ -403,8 +403,8 @@ while not done:
     screen.blit(info_text , info_btn_rect)
 
     quit_text = btn_font.render("X", True, "white")
-    quit_btn_rect = pygame.draw.rect(screen, "black", [40 ,screen_height-40,30,30], border_radius=3)
-    quit_btn_rect = quit_text.get_rect(center=(25 ,screen_height-25))
+    quit_btn_rect = pygame.draw.rect(screen, "black", [40 ,40,30,30], border_radius=3)
+    quit_btn_rect = quit_text.get_rect(center=(25 ,25))
     screen.blit(quit_text , quit_btn_rect)
 
 
